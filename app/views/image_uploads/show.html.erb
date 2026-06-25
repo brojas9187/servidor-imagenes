@@ -1,0 +1,42 @@
+<% direct_url = image_upload_file_url(@image_upload, filename: @image_upload.file.filename.to_s) %>
+
+<main class="app-shell detail-shell">
+  <nav class="top-nav">
+    <%= link_to raw("&larr; Volver"), image_uploads_path %>
+  </nav>
+
+  <section class="detail-layout">
+    <div class="detail-image">
+      <%= image_tag image_upload_file_path(@image_upload, filename: @image_upload.file.filename.to_s), alt: @image_upload.display_name %>
+    </div>
+
+    <aside class="detail-panel">
+      <p class="eyebrow">Link directo</p>
+      <h1><%= @image_upload.display_name %></h1>
+      <p class="intro-copy">
+        Usa este enlace en ImageFrame o pegalo donde necesites cargar la imagen.
+      </p>
+
+      <div class="link-row link-row-large" data-controller="clipboard">
+        <input data-clipboard-target="source" type="text" value="<%= direct_url %>" readonly>
+        <button data-action="clipboard#copy" type="button" class="primary-button">Copiar link</button>
+        <span data-clipboard-target="status" class="copy-status" aria-live="polite"></span>
+      </div>
+
+      <dl class="image-facts">
+        <div>
+          <dt>Archivo</dt>
+          <dd><%= @image_upload.file.filename %></dd>
+        </div>
+        <div>
+          <dt>Peso</dt>
+          <dd><%= number_to_human_size(@image_upload.file.byte_size) %></dd>
+        </div>
+        <div>
+          <dt>Subida</dt>
+          <dd><%= l(@image_upload.created_at, format: :short) %></dd>
+        </div>
+      </dl>
+    </aside>
+  </section>
+</main>

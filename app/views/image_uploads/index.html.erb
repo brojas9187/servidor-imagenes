@@ -1,0 +1,76 @@
+<main class="app-shell">
+  <section class="upload-panel">
+    <div class="intro">
+      <p class="eyebrow">Minecraft ImageFrame</p>
+      <h1>Sube imagenes y copia un link directo.</h1>
+      <p class="intro-copy">
+        Guarda JPG, PNG, GIF o WebP y usa el enlace generado en tu servidor.
+      </p>
+    </div>
+
+    <%= form_with model: @image_upload, html: { class: "upload-form" } do |form| %>
+      <% if @image_upload.errors.any? %>
+        <div class="form-errors">
+          <strong>No pude subir esa imagen.</strong>
+          <ul>
+            <% @image_upload.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="field">
+        <%= form.label :title, "Nombre opcional" %>
+        <%= form.text_field :title, maxlength: 80, placeholder: "Ej: logo spawn" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :file, "Imagen" %>
+        <%= form.file_field :file, accept: ImageUpload::ALLOWED_CONTENT_TYPES.join(",") %>
+        <span class="field-hint">Maximo 10 MB.</span>
+      </div>
+
+      <%= form.submit "Subir imagen", class: "primary-button" %>
+    <% end %>
+  </section>
+
+  <section class="gallery-section">
+    <div class="section-heading">
+      <h2>Imagenes subidas</h2>
+      <span><%= pluralize(@image_uploads.size, "imagen", "imagenes") %></span>
+    </div>
+
+    <% if @image_uploads.any? %>
+      <div class="image-grid">
+        <% @image_uploads.each do |image_upload| %>
+          <% direct_url = image_upload_file_url(image_upload, filename: image_upload.file.filename.to_s) %>
+
+          <article class="image-card">
+            <%= link_to image_upload_path(image_upload), class: "image-preview", aria: { label: "Ver #{image_upload.display_name}" } do %>
+              <%= image_tag image_upload_file_path(image_upload, filename: image_upload.file.filename.to_s), alt: image_upload.display_name, loading: "lazy" %>
+            <% end %>
+
+            <div class="image-meta">
+              <h3><%= image_upload.display_name %></h3>
+              <p><%= number_to_human_size(image_upload.file.byte_size) %></p>
+            </div>
+
+            <div class="link-row" data-controller="clipboard">
+              <input data-clipboard-target="source" type="text" value="<%= direct_url %>" readonly>
+              <button data-action="clipboard#copy" type="button" class="icon-button" aria-label="Copiar enlace" title="Copiar enlace">
+                <span aria-hidden="true">&#x2398;</span>
+              </button>
+              <span data-clipboard-target="status" class="copy-status" aria-live="polite"></span>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <strong>Aun no hay imagenes.</strong>
+        <p>Sube la primera y aqui aparecera su enlace directo.</p>
+      </div>
+    <% end %>
+  </section>
+</main>
