@@ -26,7 +26,10 @@ Railway usara el `Dockerfile` mediante `railway.toml`.
 Variables necesarias:
 
 - `SECRET_KEY_BASE`: genera uno con `bin/rails secret`.
-- `RAILS_MASTER_KEY`: opcional si necesitas leer `config/credentials.yml.enc`.
+
+No configures `RAILS_MASTER_KEY` in Railway unless you copy the exact contents of
+your local `config/master.key`. Do not use `bin/rails secret` for
+`RAILS_MASTER_KEY`; that value belongs only in `SECRET_KEY_BASE`.
 
 Importante: esta app usa SQLite y Active Storage en disco local. En Railway debes
 crear un volumen y montarlo en `/rails/storage` para que la base de datos y las
