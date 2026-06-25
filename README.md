@@ -1,24 +1,39 @@
-# README
+# Servidor de imagenes
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Aplicacion Rails para subir imagenes y obtener enlaces directos compatibles con
+plugins como ImageFrame para Minecraft.
 
-Things you may want to cover:
+## Desarrollo local
 
-* Ruby version
+```bash
+bin/rails db:prepare
+bin/rails server
+```
 
-* System dependencies
+La app queda disponible en `http://127.0.0.1:3000`.
 
-* Configuration
+## Docker
 
-* Database creation
+```bash
+docker build -t servidor-imagenes .
+docker run --rm -p 3000:3000 -e SECRET_KEY_BASE=$(bin/rails secret) servidor-imagenes
+```
 
-* Database initialization
+## Railway
 
-* How to run the test suite
+Railway usara el `Dockerfile` mediante `railway.toml`.
 
-* Services (job queues, cache servers, search engines, etc.)
+Variables necesarias:
 
-* Deployment instructions
+- `SECRET_KEY_BASE`: genera uno con `bin/rails secret`.
+- `RAILS_MASTER_KEY`: opcional si necesitas leer `config/credentials.yml.enc`.
 
-* ...
+Importante: esta app usa SQLite y Active Storage en disco local. En Railway debes
+crear un volumen y montarlo en `/rails/storage` para que la base de datos y las
+imagenes subidas sobrevivan a redeploys.
+
+## Pruebas
+
+```bash
+bin/rails test
+```

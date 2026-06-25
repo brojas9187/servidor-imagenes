@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# This Dockerfile is designed for production, not development. Use with Railway, Kamal,
+# or build'n'run by hand:
 # docker build -t imagenes_random .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name imagenes_random imagenes_random
+# docker run -d -p 3000:3000 -e SECRET_KEY_BASE=<generated value> --name imagenes_random imagenes_random
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -21,6 +22,8 @@ RUN apt-get update -qq && \
 
 # Set production environment
 ENV RAILS_ENV="production" \
+    RAILS_LOG_TO_STDOUT="1" \
+    RAILS_SERVE_STATIC_FILES="1" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
@@ -68,6 +71,9 @@ USER 1000:1000
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+# Keep SQLite and uploaded images on Railway's mounted volume when configured.
+VOLUME ["/rails/storage"]
+
+# Railway injects PORT at runtime. Puma reads it from config/puma.rb.
+EXPOSE 3000
+CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
