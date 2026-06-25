@@ -71,8 +71,7 @@ USER 1000:1000
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Keep SQLite and uploaded images on Railway's mounted volume when configured.
-VOLUME ["/rails/storage"]
+# Mount a Railway Volume at /rails/storage to persist SQLite and uploads.
 
 # Railway injects PORT at runtime. Puma reads it from config/puma.rb.
 EXPOSE 3000
