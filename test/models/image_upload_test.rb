@@ -36,6 +36,6 @@ class ImageUploadTest < ActiveSupport::TestCase
     )
 
     assert_not image_upload.valid?
-    assert_includes image_upload.errors[:file], "debe pesar como maximo 10 MB"
+    assert_includes image_upload.errors[:file], "debe pesar como maximo #{ImageUpload::MAX_FILE_SIZE_IN_MEGABYTES} MB"
   end
 end

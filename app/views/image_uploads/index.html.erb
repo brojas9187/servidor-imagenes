@@ -28,7 +28,7 @@
       <div class="field">
         <%= form.label :file, "Imagen" %>
         <%= form.file_field :file, accept: ImageUpload::ALLOWED_CONTENT_TYPES.join(",") %>
-        <span class="field-hint">Maximo 10 MB.</span>
+        <span class="field-hint">Maximo <%= ImageUpload::MAX_FILE_SIZE_IN_MEGABYTES %> MB.</span>
       </div>
 
       <%= form.submit "Subir imagen", class: "primary-button" %>

@@ -1,5 +1,6 @@
 class ImageUpload < ApplicationRecord
-  MAX_FILE_SIZE = 10.megabytes
+  MAX_FILE_SIZE_IN_MEGABYTES = 15
+  MAX_FILE_SIZE = MAX_FILE_SIZE_IN_MEGABYTES.megabytes
   ALLOWED_CONTENT_TYPES = %w[image/jpeg image/png image/gif image/webp].freeze
 
   has_one_attached :file
@@ -26,6 +27,6 @@ class ImageUpload < ApplicationRecord
     return unless file.attached?
     return if file.byte_size <= MAX_FILE_SIZE
 
-    errors.add(:file, "debe pesar como maximo 10 MB")
+    errors.add(:file, "debe pesar como maximo #{MAX_FILE_SIZE_IN_MEGABYTES} MB")
   end
 end
